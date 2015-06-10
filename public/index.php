@@ -2,7 +2,7 @@
 
 $path = $_SERVER['REQUEST_URI'];
 
-if ($path == '/address') {
+if (strpos($path, '/address') === 0) {
 	$controller = new \Controller();
 	$return = $controller->ex();
 	echo $return;
@@ -16,6 +16,7 @@ class Controller {
 		$this->rcd();
 
 		$id = empty($_GET['id']) ? null : (int)$_GET['id'];
+
 		$address = array_key_exists($id, $this->addresses) ? $this->addresses[$id] : array();
 		return json_encode($address);
 	}
