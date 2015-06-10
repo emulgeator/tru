@@ -1,8 +1,8 @@
 <?php
 
-$path = $_SERVER['PATH_INFO'];
+$path = $_SERVER['REQUEST_URI'];
 
-if ($path = '/address') {
+if ($path == '/address') {
 	$controller = new \Controller();
 	$return = $controller->ex();
 	echo $return;
@@ -10,23 +10,24 @@ if ($path = '/address') {
 
 class Controller {
 
-	public $addresses = [];
+	protected $addresses = [];
 
-	function ex() {
+	public function ex() {
 		$this->rcd();
-		$id = $_GET['id'];
-		$address = $this->addresses[$id];
+
+		$id = empty($_GET['id']) ? null : (int)$_GET['id'];
+		$address = array_key_exists($id, $this->addresses) ? $this->addresses[$id] : array();
 		return json_encode($address);
 	}
 
-	function rcd() {
+	protected function rcd() {
 		$file = fopen('example.csv', 'r');
 		while (($line = fgetcsv($file)) !== false) {
 			$this->addresses[] = [
 				'name'   => $line[0],
 				'phone'  => $line[1],
 				'street' => $line[2]];
-    }
+    	}
 
 		fclose($file);
 	}
