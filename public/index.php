@@ -15,7 +15,7 @@ class Controller {
 	public function ex() {
 		$this->rcd();
 
-		$id = empty($_GET['id']) ? null : (int)$_GET['id'];
+		$id = isset($_GET['id']) ? (int)$_GET['id'] : null;
 
 		$address = array_key_exists($id, $this->addresses) ? $this->addresses[$id] : array();
 		return json_encode($address);

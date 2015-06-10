@@ -1,0 +1,10 @@
+# behat.yml
+
+default:
+    autoload:
+        - %paths.base%/test
+
+    suites:
+        default:
+            paths:    [ %paths.base%/test/Test/Integration/Feature ]
+            contexts: [ Test\Integration\FeatureContext ]
