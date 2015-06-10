@@ -1,0 +1,15 @@
+{
+    "name": "emulgeator/tru",
+    "description": "TRU test task",
+    "require-dev": {
+        "phpunit/phpunit": "4.7",
+        "mockery/mockery": "^0.9.4",
+        "behat/behat": "^3.0"
+    },
+    "authors": [
+        {
+            "name": "emulgeator"
+        }
+    ],
+    "require": {}
+}
