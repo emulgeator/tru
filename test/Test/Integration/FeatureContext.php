@@ -2,12 +2,14 @@
 
 namespace Test\Integration;
 
-require __DIR__ . '/../../../config.php';
+require_once realpath(__DIR__ . '/../../../config/bootstrap.php');
+require_once getPath('config/config.php');
 
+
+use Application\Config;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
-use Behat\Gherkin\Node\TableNode;
 
 /**
  * Defines application features from the specific context.
@@ -32,15 +34,15 @@ class FeatureContext implements Context, SnippetAcceptingContext
      * You can also pass arbitrary arguments to the
      * context constructor through behat.yml.
      */
-    public function __construct()
-    {
+    public function __construct() {
     }
 
 	/**
 	 * @When I call the get address with the id :addressId
 	 */
 	public function iCallTheGetAddressWithTheId($addressId) {
-		$url = APP_URL . 'address?' . http_build_query(array('id' => $addressId));
+		$url = Config::getInstance()->get('application.url') . 'address?' . http_build_query(array('id' => $addressId));
+
 		$curl = curl_init($url);
 		$options = array(
 			CURLOPT_RETURNTRANSFER => true,

@@ -1,4 +1,7 @@
 <?php
+require realpath(__DIR__ . '/../config/bootstrap.php');
+
+new \Application\Exception\AutoloadException();
 
 $path = $_SERVER['REQUEST_URI'];
 
