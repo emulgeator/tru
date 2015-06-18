@@ -123,22 +123,25 @@ class Application {
 	 */
 	public function run() {
 		try {
-			$controllerName = null;
+			$controller = null;
 			$action = null;
 			try {
-				$this->router->getRoute($controllerName, $action);
+				$this->router->getRoute($controller, $action);
 
-				$this->dispatchedController = $controllerName;
+				$this->dispatchedController = $controller;
 				$this->dispatchedAction = $action;
 			}
 			catch (RouterException $exception) {
-				// TODO: return 404
+				header('HTTP/1.1 404 Not Found');
+				return;
 			}
 
-			$controllerClass = '\\Application\\Controller\\' . $controllerName;
-			(new $controllerClass)->$action();
+			$controllerClass = '\\Application\\Controller\\' . $controller;
+			$result = (new $controllerClass)->$action();
+			echo json_encode($result);
 		}
 		catch (\Exception $exception) {
+			header('HTTP/1.1 500 Internal Server Error');
 			// TODO: Handle exceptions
 		}
 

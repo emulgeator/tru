@@ -107,7 +107,7 @@ class RestRouter {
 					$action = 'get';
 				}
 				else {
-					$action = 'list';
+					$action = 'getList';
 				}
 				break;
 

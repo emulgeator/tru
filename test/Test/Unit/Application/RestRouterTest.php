@@ -51,11 +51,11 @@ class RestRouterTest extends PHPUnit_Framework_TestCase {
 		$controllerClassName = 'TestController';
 
 		return array(
-			'get action'    => array(RestRequest::METHOD_HTTP_GET,    '/test/1', $controllerClassName, 'get',    1),
-			'list action'   => array(RestRequest::METHOD_HTTP_GET,    '/test',   $controllerClassName, 'list',   null),
-			'delete action' => array(RestRequest::METHOD_HTTP_DELETE, '/test/1', $controllerClassName, 'delete', 1),
-			'put action'    => array(RestRequest::METHOD_HTTP_PUT,    '/test/1', $controllerClassName, 'update', 1),
-			'post action'   => array(RestRequest::METHOD_HTTP_POST,   '/test',   $controllerClassName, 'create', null),
+			'get action'    => array(RestRequest::METHOD_HTTP_GET,    '/test/1', $controllerClassName, 'get',     1),
+			'list action'   => array(RestRequest::METHOD_HTTP_GET,    '/test',   $controllerClassName, 'getList', null),
+			'delete action' => array(RestRequest::METHOD_HTTP_DELETE, '/test/1', $controllerClassName, 'delete',  1),
+			'put action'    => array(RestRequest::METHOD_HTTP_PUT,    '/test/1', $controllerClassName, 'update',  1),
+			'post action'   => array(RestRequest::METHOD_HTTP_POST,   '/test',   $controllerClassName, 'create',  null),
 		);
 	}
 
