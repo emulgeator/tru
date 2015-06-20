@@ -144,6 +144,15 @@ class Application {
 	}
 
 	/**
+	 * Returns the response object used by the application.
+	 *
+	 * @return RestResponse
+	 */
+	public function getResponse() {
+		return $this->response;
+	}
+
+	/**
 	 * Returns the name of the currently dispatched Controller and Action.
 	 *
 	 * @param string $controllerName   The name of the Controller will be populated here (Outgoing parameter).
@@ -179,7 +188,7 @@ class Application {
 			$this->response->setStatusCode('404');
 		}
 		catch (HttpException $exception) {
-			$this->response->setStatusCode($exception->getCode());
+			$this->response->setStatusCode($exception->getCode(), $exception->getMessage());
 		}
 		catch (\Exception $exception) {
 			$this->response->setStatusCode('500');

@@ -4,6 +4,9 @@ namespace Application\Controller;
 
 
 use Application\Application;
+use Application\RestRequest;
+use Application\RestResponse;
+use Application\RestRouter;
 
 /**
  * Common ancestor of the Controller classes.
@@ -13,12 +16,35 @@ use Application\Application;
 abstract class ControllerAbstract implements IController {
 
 	/**
-	 * Returns the request.
+	 * The router instance
 	 *
-	 * @return \Application\RestRequest
+	 * @var RestRouter
 	 */
-	protected function getRequest() {
-		return Application::getInstance()->getRequest();
+	protected $router;
+
+	/**
+	 * The request instance for the application.
+	 *
+	 * @var RestRequest
+	 */
+	protected $request;
+
+	/**
+	 * The response instance for the application.
+	 *
+	 * @var RestResponse
+	 */
+	protected $response;
+
+	/**
+	 * Construct
+	 */
+	function __construct() {
+		$application = Application::getInstance();
+
+		$this->router = $application->getRouter();
+		$this->request = $application->getRequest();
+		$this->response = $application->getResponse();
 	}
 
 	/**

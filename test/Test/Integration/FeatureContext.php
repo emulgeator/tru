@@ -43,6 +43,13 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 	 */
 	protected $addresses = array();
 
+	/**
+	 * Stores the params sent to the API.
+	 *
+	 * @var array
+	 */
+	protected $sentParams = array();
+
     /**
      * Initializes context.
      *
@@ -89,6 +96,22 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 	}
 
 	/**
+	 * @When I call the get address with the id :addressId
+	 */
+	public function iCallTheGetAddressWithTheId($addressId) {
+		$this->callUri('address/' . $addressId);
+	}
+
+	/**
+	 * @When I call the create address with
+	 */
+	public function iCallTheCreateAddressWith(TableNode $table) {
+		$params = $table->getHash()[0];
+
+		$this->callUri('address', RestRequest::METHOD_HTTP_POST, $params);
+	}
+
+	/**
 	 * Calls the given URI with the given parameters.
 	 *
 	 * @param string $uri           URI to call.
@@ -106,6 +129,7 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_HEADER         => true,
 		);
+		$this->sentParams = $params;
 
 		switch ($method) {
 			case RestRequest::METHOD_HTTP_GET:
@@ -206,17 +230,7 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 	 * @Then the result should be the address with the name :name and without extra details
 	 */
 	public function theResultShouldBeTheAddressWithTheNameWithoutExtraDetails($name) {
-		$expectedAddress = null;
-		foreach ($this->addresses as $address) {
-			if ($address->name == $name) {
-				$expectedAddress = $address;
-				break;
-			}
-		}
-
-		if (empty($expectedAddress)) {
-			throw new \Exception('Expected address with name "' . $name . '" does not exist!');
-		}
+		$expectedAddress = $this->getAddressByName($name);
 		$expectedAddress->id = null;
 		$expectedAddress->created_at = null;
 
@@ -236,5 +250,77 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 		}
 
 		PHPUnit_Framework_Assert::assertEquals(array_values($this->addresses), $addresses);
+	}
+
+	/**
+	 * @Then the result should be the address with the name :name
+	 */
+	public function theResultShouldBeTheAddressWithTheName($name) {
+		$expectedAddress = $this->getAddressByName($name);
+
+		$address = new Address(json_decode($this->responseBody, true));
+		PHPUnit_Framework_Assert::assertEquals($expectedAddress, $address);
+	}
+
+	/**
+	 * @Then a location header with the URI to the created resource should be returned
+	 */
+	public function aLocationHeaderWithTheUriToTheCreatedResourceShouldBeReturned() {
+		$this->getIdOfCreatedAddressFromHeaders();
+	}
+
+	/**
+	 * @Then the created address should be the same as the sent
+	 */
+	public function theCreatedAddressShouldBeTheSameAsTheSent() {
+		$address = $this->addressHandler->getById($this->getIdOfCreatedAddressFromHeaders());
+
+		foreach ($this->sentParams as $field => $value) {
+			if ($address->$field != $value) {
+				throw new \Exception($field . ' field of address is different "'
+					. $value . '" vs "' . $address->$field . '"');
+			}
+		}
+	}
+
+	/**
+	 * Returns the id of the created address by parsing the response headers.
+	 *
+	 * @return int   The id
+	 */
+	protected function getIdOfCreatedAddressFromHeaders() {
+		$headers = explode("\n", $this->responseHeaders);
+
+		foreach ($headers as $header) {
+			if (preg_match('#Location: address/(?<addressId>\d+)#', $header, $matches)) {
+				return (int)$matches['addressId'];
+			}
+		}
+
+		throw new \Exception('Location header with URI to resource not found!');
+	}
+
+	/**
+	 * Returns the address with the given name
+	 *
+	 * @param string $name
+	 *
+	 * @throws \Exception   If the address does not exist.
+	 *
+	 * @return \Application\Entity\Address
+	 */
+	protected function getAddressByName($name) {
+		$expectedAddress = null;
+		foreach ($this->addresses as $address) {
+			if ($address->name == $name) {
+				$expectedAddress = $address;
+				break;
+			}
+		}
+
+		if (empty($expectedAddress)) {
+			throw new \Exception('Expected address with name "' . $name . '" does not exist!');
+		}
+		return $expectedAddress;
 	}
 }
