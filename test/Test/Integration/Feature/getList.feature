@@ -4,9 +4,9 @@ Feature: Get the list of the addresses
 
 	Background:
 		Given The following addresses exist:
-			| name  | phone  | street  |
-			| name1 | phone1 | street1 |
-			| name2 | phone2 | street2 |
+			| name | phone | street  |
+			| name | 1234  | street1 |
+			| name | 1234  | street2 |
 
 	@legacy
 	Scenario: When called with a nonexistent id, an empty array should be returned
@@ -17,7 +17,7 @@ Feature: Get the list of the addresses
 	@legacy
 	Scenario: When called with an existent id, the corresponding address should be returned
 		When I call the list addresses with the id "1"
-		Then the result should be the address with the name "name1" and without extra details
+		Then the result should be the address with the name "name" and without extra details
 
 
 	Scenario: When called, it should list all the addresses in the database ordered by id
