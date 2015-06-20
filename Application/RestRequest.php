@@ -59,9 +59,15 @@ class RestRequest {
 	 * Constructor.
 	 */
 	public function __construct() {
-		$this->getParams = $_GET;
-		$this->postParams = $_POST;
 		$this->server = $_SERVER;
+		$this->getParams = $_GET;
+
+		if ($this->getMethod() == self::METHOD_HTTP_PUT) {
+			parse_str(file_get_contents('php://input'), $this->postParams);
+		}
+		else {
+			$this->postParams = $_POST;
+		}
 
 		list($this->currentUri) = explode('?', $this->server['REQUEST_URI'], 2);
 	}

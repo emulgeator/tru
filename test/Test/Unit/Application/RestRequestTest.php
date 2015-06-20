@@ -17,6 +17,7 @@ class RestRequestTest extends PHPUnit_Framework_TestCase {
 		parent::setUp();
 
 		$_SERVER['REQUEST_URI'] = $this->requestUri;
+		$_SERVER['REQUEST_METHOD'] = RestRequest::METHOD_HTTP_GET;
 	}
 
 	/**
@@ -74,6 +75,7 @@ class RestRequestTest extends PHPUnit_Framework_TestCase {
 		$paramName = 'test';
 		$expectedResult = 1;
 		$_POST[$paramName] = $expectedResult;
+		$_SERVER['REQUEST_METHOD'] = RestRequest::METHOD_HTTP_POST;
 
 		$result = (new RestRequest())->getPost($paramName);
 
@@ -86,6 +88,7 @@ class RestRequestTest extends PHPUnit_Framework_TestCase {
 	public function whenGettingNonExistentPostParameter_shouldReturnDefault() {
 		$paramName = 'test';
 		$expectedResult = 2;
+		$_SERVER['REQUEST_METHOD'] = RestRequest::METHOD_HTTP_POST;
 
 		$result = (new RestRequest())->getPost($paramName, $expectedResult);
 
@@ -99,6 +102,7 @@ class RestRequestTest extends PHPUnit_Framework_TestCase {
 	public function whenCheckingExistentPostParameter_shouldReturnTrue() {
 		$paramName = 'test';
 		$_POST[$paramName] = 1;
+		$_SERVER['REQUEST_METHOD'] = RestRequest::METHOD_HTTP_POST;
 
 		$result = (new RestRequest())->hasPost($paramName);
 
@@ -110,6 +114,7 @@ class RestRequestTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function whenCheckingNonExistentPostParameter_shouldReturnFalse() {
 		$paramName = 'test';
+		$_SERVER['REQUEST_METHOD'] = RestRequest::METHOD_HTTP_POST;
 
 		$result = (new RestRequest())->hasPost($paramName);
 

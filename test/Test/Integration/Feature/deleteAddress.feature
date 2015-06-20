@@ -6,7 +6,7 @@ Feature: This action should delete the address with the given id.
 		Then the http status of the response should be "404"
 
 
-	Scenario: When called with an existent id, the corresponding address should be returned
+	Scenario: When called with an existent id, only the given address should be deleted
 		Given The following addresses exist:
 			| name  | phone | street  |
 			| name  | 1234  | street1 |

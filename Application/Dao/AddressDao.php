@@ -110,4 +110,38 @@ class AddressDao extends DaoAbstract {
 
 		return (bool)$statement->rowCount();
 	}
+
+	/**
+	 * Updates the given address.
+	 *
+	 * @param int    $addressId   Id of the address to modify.
+	 * @param string $name        Name of the person.
+	 * @param string $phone       Phone number.
+	 * @param string $street      Street address.
+	 *
+	 * @return bool
+	 */
+	public function update($addressId, $name, $phone, $street) {
+		$update = '
+			UPDATE
+				address
+			SET
+				name   = :name,
+				phone  = :phone,
+				street = :street
+			WHERE
+				id = :addressId
+		';
+
+		$queryParams = array(
+			'addressId' => $addressId,
+			'name'      => $name,
+			'phone'     => $phone,
+			'street'    => $street
+		);
+
+		$statement = $this->prepareAndExecuteStatement($update, $queryParams);
+
+		return (bool)$statement->rowCount();
+	}
 }

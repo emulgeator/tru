@@ -65,6 +65,26 @@ class AddressHandler implements IEntityHandler {
 	}
 
 	/**
+	 * Updates the given address.
+	 *
+	 * @param int    $addressId   Id of the address to modify.
+	 * @param string $name        Name of the person.
+	 * @param string $phone       Phone number.
+	 * @param string $street      Street address.
+	 *
+	 * @throws ParameterException
+	 *
+	 * @return bool
+	 */
+	public function update($addressId, $name, $phone, $street) {
+		$this->validateName($name);
+		$this->validatePhoneNumber($phone);
+		$this->validateStreet($street);
+
+		return $this->getAddressDao()->update($addressId, $name, $phone, $street);
+	}
+
+	/**
 	 * Returns the AddressDao object.
 	 *
 	 * @return \Application\Dao\AddressDao

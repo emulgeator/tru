@@ -79,7 +79,7 @@ class AddressController extends ControllerAbstract {
 			throw new HttpException($e->getMessage(), 400);
 		}
 
-		$this->response->setStatusCode('201');
+		$this->response->setStatusCode(201);
 		$this->response->addHeader('Location', 'address/' . $addressId);
 	}
 
@@ -92,6 +92,30 @@ class AddressController extends ControllerAbstract {
 		if (!$this->getAddressHandler()->delete($addressId)) {
 			throw new HttpException('Address does not exist', 404);
 		}
+	}
+
+	/**
+	 * Updates the given address.
+	 *
+	 * @return void
+	 */
+	public function update() {
+		$addressId = (int)$this->request->getRouteParam();
+		$name = (string)$this->request->getPost('name');
+		$phone = (string)$this->request->getPost('phone');
+		$street = (string)$this->request->getPost('street');
+
+		try {
+			if (!$this->getAddressHandler()->update($addressId, $name, $phone, $street)) {
+				throw new HttpException('Address does not exist', 404);
+			}
+		}
+		catch (ParameterException $e) {
+
+			throw new HttpException($e->getMessage(), 400);
+		}
+
+		$this->response->setStatusCode(204);
 	}
 
 

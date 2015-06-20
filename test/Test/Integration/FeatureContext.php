@@ -119,6 +119,15 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 	}
 
 	/**
+	 * @When I call the update address with the id :addressId and data
+	 */
+	public function iCallTheUpdateAddressWithTheIdAndData($addressId, TableNode $table) {
+		$params = $table->getHash()[0];
+
+		$this->callUri('address/' . $addressId, RestRequest::METHOD_HTTP_PUT, $params);
+	}
+
+	/**
 	 * Calls the given URI with the given parameters.
 	 *
 	 * @param string $uri           URI to call.
@@ -153,9 +162,7 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 
 			case RestRequest::METHOD_HTTP_PUT:
 				$options[CURLOPT_CUSTOMREQUEST] = RestRequest::METHOD_HTTP_PUT;
-				$formattedParameters = array();
-				$this->formatDataForPost($params, $formattedParameters);
-				$options[CURLOPT_POSTFIELDS] = $formattedParameters;
+				$options[CURLOPT_POSTFIELDS] = http_build_query($params);
 				break;
 
 			case RestRequest::METHOD_HTTP_DELETE:
@@ -206,7 +213,8 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 
 			if (is_array($value) || is_object($value)) {
 				$this->formatDataForPost($value, $output, $currentKey);
-			} else {
+			}
+			else {
 				$output[$currentKey] = $value;
 			}
 		}
@@ -316,6 +324,19 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 
 		if (!$found) {
 			throw new \Exception('Address with name "' . $name . '" not found!');
+		}
+	}
+
+	/**
+	 * @Then the address with the id :addressId should be modified
+	 */
+	public function theAddressWithTheIdShouldBeModified($addressId) {
+		$address = $this->addressHandler->getById($addressId);
+
+		foreach ($this->sentParams as $field => $value) {
+			if ($address->$field != $value) {
+				throw new \Exception('Address is not modified');
+			}
 		}
 	}
 
