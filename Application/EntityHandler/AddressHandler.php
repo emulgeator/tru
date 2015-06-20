@@ -54,6 +54,17 @@ class AddressHandler implements IEntityHandler {
 	}
 
 	/**
+	 * Deletes the given address.
+	 *
+	 * @param int $addressId   Id of the address to delete.
+	 *
+	 * @return bool
+	 */
+	public function delete($addressId) {
+		return $this->getAddressDao()->delete($addressId);
+	}
+
+	/**
 	 * Returns the AddressDao object.
 	 *
 	 * @return \Application\Dao\AddressDao

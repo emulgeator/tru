@@ -83,6 +83,17 @@ class AddressController extends ControllerAbstract {
 		$this->response->addHeader('Location', 'address/' . $addressId);
 	}
 
+	/**
+	 * Deletes the given address
+	 */
+	public function delete() {
+		$addressId = (int)$this->request->getRouteParam();
+
+		if (!$this->getAddressHandler()->delete($addressId)) {
+			throw new HttpException('Address does not exist', 404);
+		}
+	}
+
 
 	/**
 	 * Removes the id and created_at from the address.

@@ -112,6 +112,13 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 	}
 
 	/**
+	 * @When I call the delete address with the id :addressId
+	 */
+	public function iCallTheDeleteAddressWithTheId($addressId) {
+		$this->callUri('address/' . $addressId, RestRequest::METHOD_HTTP_DELETE);
+	}
+
+	/**
 	 * Calls the given URI with the given parameters.
 	 *
 	 * @param string $uri           URI to call.
@@ -280,6 +287,35 @@ class FeatureContext implements Context, SnippetAcceptingContext {
 				throw new \Exception($field . ' field of address is different "'
 					. $value . '" vs "' . $address->$field . '"');
 			}
+		}
+	}
+
+	/**
+	 * @Then there should be :expectedAddressCount addresses should exist
+	 */
+	public function thereShouldBeAddressesShouldExist($expectedAddressCount) {
+		$addressCount = count($this->addressHandler->getList());
+
+		if ($addressCount != $expectedAddressCount) {
+			throw new \Exception('There are "' . $addressCount . '" instead of "' . $expectedAddressCount . '"');
+		}
+	}
+
+	/**
+	 * @Then an address with the name :name should exist
+	 */
+	public function anAddressWithTheNameShouldExist($name) {
+		$addresses = $this->addressHandler->getList();
+
+		$found = false;
+		foreach ($addresses as $address) {
+			if ($address->name == $name) {
+				$found = true;
+			}
+		}
+
+		if (!$found) {
+			throw new \Exception('Address with name "' . $name . '" not found!');
 		}
 	}
 

@@ -1,7 +1,7 @@
 Feature: This action should return an address with the given id.
 
 
-	Scenario: When called with a nonexistent id, an empty array should be returned
+	Scenario: When called with a nonexistent id 404 should be returned
 		When I call the get address with the id "1"
 		Then the http status of the response should be "404"
 

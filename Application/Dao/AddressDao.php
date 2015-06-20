@@ -90,4 +90,24 @@ class AddressDao extends DaoAbstract {
 
 		return (int)$this->connection->lastInsertId();
 	}
+
+	/**
+	 * Deletes the given address.
+	 *
+	 * @param int $addressId   Id of the address to delete.
+	 *
+	 * @return bool
+	 */
+	public function delete($addressId) {
+		$delete = '
+			DELETE FROM
+				address
+			WHERE
+				id = :addressId
+		';
+
+		$statement = $this->prepareAndExecuteStatement($delete, array('addressId' => $addressId));
+
+		return (bool)$statement->rowCount();
+	}
 }
