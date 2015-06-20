@@ -6,10 +6,8 @@ namespace Application\ErrorHandler;
 /**
  * This error handler converts the desired errors to ErrorException
  *
- * <b>Warning! If you use only this ErrorHandler, errors triggered during the autoload process will be suppressed </b>
- *
- * @package      YapepBase
- * @subpackage   ErrorHandler
+ * @package    Application
+ * @subpackage ErrorHandler
  */
 class ExceptionCreatorErrorHandler {
 

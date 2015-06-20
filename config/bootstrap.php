@@ -14,7 +14,6 @@ $autoloader->register();
 
 unset($autoloader);
 
-
 function getPath($relativeFilePath) {
 	return ROOT_DIR . '/' . ltrim($relativeFilePath, DIRECTORY_SEPARATOR);
 }

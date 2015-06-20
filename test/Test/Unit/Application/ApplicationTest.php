@@ -79,7 +79,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 
 
 	protected function expectRunGetAction($controllerName, $actionName,  $expectedResult) {
-		$controllerMock = Mockery::mock('\Application\Controller\ControllerAbstract')
+		$controllerMock = Mockery::mock('\Application\Controller\IController')
 			->shouldReceive($actionName)
 				->once()
 				->andReturn($expectedResult)

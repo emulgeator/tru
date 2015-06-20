@@ -10,7 +10,7 @@ use Application\Application;
  *
  * @package Application\Controller
  */
-abstract class ControllerAbstract {
+abstract class ControllerAbstract implements IController {
 
 	/**
 	 * Returns the request.
@@ -19,5 +19,14 @@ abstract class ControllerAbstract {
 	 */
 	protected function getRequest() {
 		return Application::getInstance()->getRequest();
+	}
+
+	/**
+	 * Returns the requested Entity Handler.
+	 *
+	 * @return \Application\EntityHandler\AddressHandler
+	 */
+	protected function getAddressHandler() {
+		return Application::getInstance()->getDependencyContainer()->getEntityHandler('AddressHandler');
 	}
 }

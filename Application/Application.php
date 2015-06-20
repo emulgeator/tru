@@ -3,6 +3,7 @@
 namespace Application;
 
 
+use Application\Exception\HttpException;
 use Application\Exception\RouterException;
 
 /**
@@ -177,9 +178,12 @@ class Application {
 		catch (RouterException $exception) {
 			$this->response->setStatusCode('404');
 		}
+		catch (HttpException $exception) {
+			$this->response->setStatusCode($exception->getCode());
+		}
 		catch (\Exception $exception) {
 			$this->response->setStatusCode('500');
-			// TODO: Handle exceptions
+			var_export($exception);
 		}
 
 		$this->response->send();

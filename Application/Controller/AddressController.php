@@ -3,6 +3,10 @@
 namespace Application\Controller;
 
 
+use Application\Application;
+use Application\Entity\Address;
+use Application\Exception\HttpException;
+
 /**
  * Address related actions
  *
@@ -10,7 +14,12 @@ namespace Application\Controller;
  */
 class AddressController extends ControllerAbstract {
 
-	protected $addresses = [];
+	/**
+	 * Indicates if the current request is a legacy one.
+	 *
+	 * @var bool
+	 */
+	protected $isLegacyRequest = false;
 
 	/**
 	 * Returns the list of the addresses
@@ -20,22 +29,45 @@ class AddressController extends ControllerAbstract {
 	 * @return array
 	 */
 	public function getList() {
-		$this->rcd();
-		$id = $this->getRequest()->getGet('id');
+		if ($this->getRequest()->hasGet('id')) {
+			$addressId = (int)$this->getRequest()->getGet('id');
+			$this->isLegacyRequest = true;
+			$this->getRequest()->setRouteParam($addressId);
 
-		$address = array_key_exists($id, $this->addresses) ? $this->addresses[$id] : array();
+			return $this->get();
+		}
+
+		return $this->getAddressHandler()->getList();
+	}
+
+	/**
+	 * Returns one address by id.
+	 *
+	 * @return array
+	 */
+	public function get() {
+		$addressId = (int)$this->getRequest()->getRouteParam();
+
+		$address = $this->getAddressHandler()->getById($addressId);
+
+		if (empty($address)) {
+			throw new HttpException(404);
+		}
+
+		if ($this->isLegacyRequest) {
+			$this->cleanAddress($address);
+		}
+
 		return $address;
 	}
 
-	protected function rcd() {
-		$file = fopen('example.csv', 'r');
-		while (($line = fgetcsv($file)) !== false) {
-			$this->addresses[] = [
-				'name'   => $line[0],
-				'phone'  => $line[1],
-				'street' => $line[2]];
-    	}
 
-		fclose($file);
+	/**
+	 * Removes the id and created_at from the address.
+	 *
+	 * @param \Application\Entity\Address $address
+	 */
+	protected function cleanAddress(Address $address) {
+		unset($address->id, $address->created_at);
 	}
 }

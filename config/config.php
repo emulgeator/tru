@@ -6,5 +6,8 @@
 use Application\Config;
 
 Config::getInstance()->set(array(
-	'application.url' => 'http://tru.dev/',
+	'resource.database.tru.host'     => 'localhost',
+	'resource.database.tru.user'     => 'tru',
+	'resource.database.tru.password' => 'tru',
+	'resource.database.tru.database' => 'tru',
 ));
