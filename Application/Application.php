@@ -34,6 +34,20 @@ class Application {
 	protected $request;
 
 	/**
+	 * The response instance for the application.
+	 *
+	 * @var RestResponse
+	 */
+	protected $response;
+
+	/**
+	 * The dependency container.
+	 *
+	 * @var DependencyContainer
+	 */
+	protected $dependencyContainer;
+
+	/**
 	 * Stores the name of the currently dispatched Controller.
 	 *
 	 * @var string
@@ -51,8 +65,7 @@ class Application {
 	 * Singleton constructor
 	 */
 	protected function __construct() {
-		$this->request = new RestRequest();
-		$this->router = new RestRouter($this->request);
+		$this->dependencyContainer = new DependencyContainer();
 	}
 
 	/**
@@ -70,6 +83,45 @@ class Application {
 			static::$instance = new static();
 		}
 		return static::$instance;
+	}
+
+	/**
+	 * @param RestRequest $request
+	 *
+	 * @return Application
+	 */
+	public function setRequest(RestRequest $request) {
+		$this->request = $request;
+		return $this;
+	}
+
+	/**
+	 * @param RestRouter $router
+	 *
+	 * @return Application
+	 */
+	public function setRouter(RestRouter $router) {
+		$this->router = $router;
+		return $this;
+	}
+
+	/**
+	 * @param RestRouter $router
+	 *
+	 * @return Application
+	 */
+	public function setResponse(RestResponse $response) {
+		$this->response = $response;
+		return $this;
+	}
+
+	/**
+	 * Returns the Dependency Container.
+	 *
+	 * @return DependencyContainer
+	 */
+	public function getDependencyContainer() {
+		return $this->dependencyContainer;
 	}
 
 	/**
@@ -104,19 +156,6 @@ class Application {
 	}
 
 	/**
-	 * Sets the name of the currently dispatched Controller and Action.
-	 *
-	 * @param string $controllerName   Name of the controller.
-	 * @param string $actionName       Name of the action.
-	 *
-	 * @return void
-	 */
-	public function setDispatchedAction($controllerName, $actionName) {
-		$this->dispatchedController = $controllerName;
-		$this->dispatchedAction = $actionName;
-	}
-
-	/**
 	 * Runs the request on the application
 	 *
 	 * @return void
@@ -125,25 +164,24 @@ class Application {
 		try {
 			$controller = null;
 			$action = null;
-			try {
-				$this->router->getRoute($controller, $action);
 
-				$this->dispatchedController = $controller;
-				$this->dispatchedAction = $action;
-			}
-			catch (RouterException $exception) {
-				header('HTTP/1.1 404 Not Found');
-				return;
-			}
+			$this->router->getRoute($controller, $action);
 
-			$controllerClass = '\\Application\\Controller\\' . $controller;
-			$result = (new $controllerClass)->$action();
-			echo json_encode($result);
+			$this->dispatchedController = $controller;
+			$this->dispatchedAction = $action;
+
+			$result = $this->dependencyContainer->getController($controller)->$action();
+
+			$this->response->setContent($result);
+		}
+		catch (RouterException $exception) {
+			$this->response->setStatusCode('404');
 		}
 		catch (\Exception $exception) {
-			header('HTTP/1.1 500 Internal Server Error');
+			$this->response->setStatusCode('500');
 			// TODO: Handle exceptions
 		}
 
+		$this->response->send();
 	}
 }
