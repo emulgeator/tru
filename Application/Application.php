@@ -183,7 +183,7 @@ class Application {
 		}
 		catch (\Exception $exception) {
 			$this->response->setStatusCode('500');
-			var_export($exception);
+			// TODO: Handle exceptions
 		}
 
 		$this->response->send();
